@@ -1,0 +1,31 @@
+{
+  "name": "fancydrive-netlify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server-local.js",
+    "build": "netlify-lambda build express",
+    "build:serve": "netlify-lambda serve express",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "node node_modules/pug-cli/index.js -O pugcompile.json -D -c views/ --out ./viewsout"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mnsrulz/fancydrive-netlify.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mnsrulz/fancydrive-netlify/issues"
+  },
+  "homepage": "https://github.com/mnsrulz/fancydrive-netlify#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "netlify-lambda": "^2.0.14",
+    "pug": "^3.0.2",
+    "pug-cli": "^1.0.0-alpha6",
+    "serverless-http": "^2.7.0"
+  }
+}
