@@ -13,11 +13,15 @@ router.get('/watchfire/*', async (req, res) => {
   const nexturl = req.url === '/watchfire/' ? `/watchfire/0:/me/` : req.url;
   const page = req.url.split('/').pop() || '/';
   const items = await fancydrivewrapper(nexturl.substr(11));
-  items.filter(x => x.isFolder).forEach(x => x.link = `${baseUrl}${x.link}`);
-  res.send(pageview({
-    results: items,
-    directory: page
-  }));
+  if (items) {
+    items.filter(x => x.isFolder).forEach(x => x.link = `${baseUrl}${x.link}`);
+    res.send(pageview({
+      results: items,
+      directory: page
+    }));
+  } else {
+    res.status(500).send('unable to get content error occurred');
+  }
 });
 
 app.use('/.netlify/functions/server', router);  // path must route to lambda (express/server.js)

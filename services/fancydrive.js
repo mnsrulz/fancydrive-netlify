@@ -15,24 +15,26 @@ if (typeof atob === 'undefined') {
 module.exports = parseListing;
 
 async function parseListing(path) {
-    console.log(path);
     const fancyDriveUrl = `${watchfireBaseUrl}${path}`;
-    const response = await got.post(fancyDriveUrl, {
-        form: {
-            password: '',
-            page_token: '',
-            page_index: 0
-        }
-    });
-    const encodedJson = JSON.parse(gdidecode(read(response.body)));
-    console.log(encodedJson);
-
-    const massaged = parseIt(encodedJson.data.files, path);
-
-    massaged.filter(x => x.isFolder === false)
-        .forEach(x => x.link = `${watchfireBaseUrl}${x.link}`);
-
-    return massaged;
+    try {
+        console.log(`FancyDriveUrl: ${fancyDriveUrl}`);
+        const response = await got.post(fancyDriveUrl, {
+            form: {
+                password: '',
+                page_token: '',
+                page_index: 0
+            }
+        });
+        const encodedJson = JSON.parse(gdidecode(read(response.body)));
+        console.log(encodedJson);
+        const massaged = parseIt(encodedJson.data.files, path);
+        massaged.filter(x => x.isFolder === false)
+            .forEach(x => x.link = `${watchfireBaseUrl}${x.link}`);
+        return massaged;
+    } catch (error) {
+        console.log(`error in fancydriveurl: ${fancyDriveUrl} `, error.message);
+        return null;
+    }
 }
 
 
