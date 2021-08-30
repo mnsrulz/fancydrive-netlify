@@ -4,12 +4,18 @@ const serverless = require('serverless-http');
 const app = express();
 const router = express.Router();
 const pageview = require('../viewsout/index');
+const fancydrivewrapper = require('../services/fancydrive');
 
 // Home route.
-router.get('/*', (req, res) => {
+router.get('/watchfire/*', async (req, res) => {
+  const baseUrl = '/.netlify/functions/server/watchfire/';
+  console.log(`RequestUrl: ${req.url}`);
+  const nexturl = req.url === '/watchfire/' ? `/watchfire/0:/me/` : req.url;
   const page = req.url.split('/').pop() || '/';
+  const items = await fancydrivewrapper(nexturl.substr(11));
+  items.filter(x => x.isFolder).forEach(x => x.link = `${baseUrl}${x.link}`);
   res.send(pageview({
-    results: [{ title: 'item1', link: '/pg1' }, { title: 'item2', link: '/pg2' }],
+    results: items,
     directory: page
   }));
 });

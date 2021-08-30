@@ -2,15 +2,19 @@
 const app = require('./express/server');
 const path = require('path');
 const pugm = require('pug');
+const fancydrivewrapper = require('./services/fancydrive');
 // Load View Engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // Local request handlers.
-app.get('/*', (req, res) => {
+
+app.get(['/watchfire', '/watchfire/*'], async (req, res) => {
+  const nexturl = req.url === '/watchfire' ? '/watchfire/0:/me/' : req.url;
   const page = req.url.split('/').pop() || '/';
+  const items = await fancydrivewrapper(nexturl.substr(11));
   res.render('index', {
-    results: [{ title: 'item1', link: '/pg1' }, { title: 'item2', link: '/pg2' }],
+    results: items,
     directory: page
   });
 });
@@ -27,6 +31,6 @@ app.get('/*', (req, res) => {
 
 // Start Server.
 let port = 3005;
-app.listen(port, function(){
+app.listen(port, function () {
   console.log(`Server started on port ${port}...`);
 });
