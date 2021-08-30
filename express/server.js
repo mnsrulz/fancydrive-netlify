@@ -30,7 +30,7 @@ router.get('/watchfire/*', async (req, res) => {
     }
   } else {
     console.log('not a directory... so redirecting to the hosting site');
-    const streamBaseUrl = fancydrivewrapper.extractStreamBaseUrl();
+    const streamBaseUrl = await fancydrivewrapper.extractStreamBaseUrl();
     res.redirect(`${streamBaseUrl}/${nurl1}`);
   }
 });
