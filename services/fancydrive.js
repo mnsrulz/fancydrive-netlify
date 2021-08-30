@@ -12,7 +12,8 @@ if (typeof atob === 'undefined') {
 }
 
 //export default parseListing;
-module.exports = parseListing;
+module.exports.parseListing = parseListing;
+module.exports.extractStreamBaseUrl = extractStreamBaseUrl;
 
 async function parseListing(path) {
     const fancyDriveUrl = `${watchfireBaseUrl}${path}`;
@@ -33,6 +34,13 @@ async function parseListing(path) {
         console.log(`error in fancydriveurl: ${fancyDriveUrl} `, error.message);
         return null;
     }
+}
+
+async function extractStreamBaseUrl() {
+    const response = await got(watchfireBaseUrl);
+    const rx = /downloaddomain":"(https[^"]*)"/
+    const rxResult = rx.exec(response.body)[1];
+    return rxResult;
 }
 
 

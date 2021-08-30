@@ -16,7 +16,7 @@ router.get('/watchfire/*', async (req, res) => {
   const nurl1 = nexturl.substr(11);
   if (req.url.endsWith('/')) {
     const page = req.url.split('/').pop() || '/';
-    const items = await fancydrivewrapper(nurl1);
+    const items = await fancydrivewrapper.parseListing(nurl1);
     if (items) {
       items
         //.filter(x => x.isFolder)
@@ -30,7 +30,8 @@ router.get('/watchfire/*', async (req, res) => {
     }
   } else {
     console.log('not a directory... so redirecting to the hosting site');
-    res.redirect(`${watchfireBaseUrl}${nurl1}`);
+    const streamBaseUrl = fancydrivewrapper.extractStreamBaseUrl();
+    res.redirect(`${streamBaseUrl}/${nurl1}`);
   }
 });
 

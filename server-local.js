@@ -12,7 +12,9 @@ app.set('view engine', 'pug');
 app.get(['/watchfire', '/watchfire/*'], async (req, res) => {
   const nexturl = req.url === '/watchfire' ? '/watchfire/0:/me/' : req.url;
   const page = req.url.split('/').pop() || '/';
-  const items = await fancydrivewrapper(nexturl.substr(11));
+  const result = await fancydrivewrapper.extractStreamBaseUrl();
+  console.log(`streambaseurl: ${result}`);
+  const items = await fancydrivewrapper.parseListing(nexturl.substr(11));
   res.render('index', {
     results: items,
     directory: page
