@@ -28,8 +28,6 @@ async function parseListing(path) {
         const encodedJson = JSON.parse(gdidecode(read(response.body)));
         console.log(encodedJson);
         const massaged = parseIt(encodedJson.data.files, path);
-        massaged.filter(x => x.isFolder === false)
-            .forEach(x => x.link = `${watchfireBaseUrl}${x.link}`);
         return massaged;
     } catch (error) {
         console.log(`error in fancydriveurl: ${fancyDriveUrl} `, error.message);

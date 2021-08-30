@@ -5,22 +5,32 @@ const app = express();
 const router = express.Router();
 const pageview = require('../viewsout/index');
 const fancydrivewrapper = require('../services/fancydrive');
+const env = require('../configs/env');
+const watchfireBaseUrl = env.watchfire;
 
 // Home route.
 router.get('/watchfire/*', async (req, res) => {
   const baseUrl = '/.netlify/functions/server/watchfire/';
   console.log(`RequestUrl: ${req.url}`);
   const nexturl = req.url === '/watchfire/' ? `/watchfire/0:/me/` : req.url;
-  const page = req.url.split('/').pop() || '/';
-  const items = await fancydrivewrapper(nexturl.substr(11));
-  if (items) {
-    items.filter(x => x.isFolder).forEach(x => x.link = `${baseUrl}${x.link}`);
-    res.send(pageview({
-      results: items,
-      directory: page
-    }));
+  const nurl1 = nexturl.substr(11);
+  if (req.url.endsWith('/')) {
+    const page = req.url.split('/').pop() || '/';
+    const items = await fancydrivewrapper(nurl1);
+    if (items) {
+      items
+        //.filter(x => x.isFolder)
+        .forEach(x => x.link = `${baseUrl}${x.link}`);
+      res.send(pageview({
+        results: items,
+        directory: page
+      }));
+    } else {
+      res.status(500).send('unable to get content error occurred');
+    }
   } else {
-    res.status(500).send('unable to get content error occurred');
+    console.log('not a directory... so redirecting to the hosting site');
+    res.redirect(`${watchfireBaseUrl}${nurl1}`);
   }
 });
 
